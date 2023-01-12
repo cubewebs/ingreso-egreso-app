@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { environment } from '../environments/environment';
+
 //Angularfire
 import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+// import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,7 +21,10 @@ import { DetalleComponent } from './ingreso-egreso/detalle/detalle.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
-import { environment } from '../environments/environment';
+// import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+
 
 @NgModule({
   declarations: [
@@ -31,14 +37,16 @@ import { environment } from '../environments/environment';
     DetalleComponent,
     FooterComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
 	ReactiveFormsModule,
 	AngularFireModule.initializeApp(environment.firebase),
-	AngularFirestoreModule,
+	// AngularFirestoreModule,
+ 	// provideFirebaseApp(() => initializeApp(environment.firebase)),
+ 	provideFirestore(() => getFirestore()),
 	AngularFireAuthModule
   ],
   providers: [],

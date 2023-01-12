@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "ingreso-egreso-app-fd467": {
+      "hosting": {
+        "ingresoEgresoApp": [
+          "ingreso-egreso-app-fd467"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "ingreso-egreso-app-fd467"
+  }
+}
