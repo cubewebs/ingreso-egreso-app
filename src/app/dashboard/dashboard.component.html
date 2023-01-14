@@ -7,6 +7,12 @@
 				
 				<router-outlet></router-outlet>
 
+				<div *ngFor="let user of users$ | async">
+					<h6>User ID: {{user.uid}}</h6>
+					<h6>Name: {{user.displayName}}</h6>
+					<h6>Email: {{user.email}}</h6>
+				</div>
+
 			</div>
 			<app-footer></app-footer>
 		</div>

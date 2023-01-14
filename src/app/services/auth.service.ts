@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { User } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { map } from 'rxjs';
+import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +10,8 @@ import { map } from 'rxjs';
 export class AuthService {
 
   constructor(
-	private auth: AngularFireAuth
+	private fs: Firestore,
+	private auth: AngularFireAuth,
   ) { }
 
   initAuthListener() {
@@ -19,8 +22,16 @@ export class AuthService {
 	})
   }
 	
-	crearUsuario( nombre: string, email: string, password: string) {
-		return this.auth.createUserWithEmailAndPassword(email, password);
+	crearUsuario( displayName: string, email: string, password: string) {
+
+		return this.auth.createUserWithEmailAndPassword(email, password)
+				.then(() => {
+					const user = {displayName, email, password}
+					const userRef = collection( this.fs, 'users');
+					addDoc(userRef, user)
+				})
+				.catch( err => console.log('err ->', err))
+
 	}
 
 	loginUsuario( email: string, password: string ) {
@@ -35,6 +46,11 @@ export class AuthService {
 		return this.auth.authState.pipe(
 			map( fuser => fuser != null)
 		)
+	}
+
+	getUsers(): Observable<User[]> {
+		const userRef = collection( this.fs, 'users')
+		return collectionData( userRef, { idField: 'uid'}) as Observable<User[]>
 	}
 
 }

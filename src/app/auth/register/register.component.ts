@@ -22,8 +22,8 @@ export class RegisterComponent implements OnInit{
 		private router: Router
 		) {
 		this.registroForm = this.fb.group({
-			nombre: ['', Validators.required],
-			correo: ['', [Validators.required, Validators.email]],
+			name: ['', Validators.required],
+			email: ['', [Validators.required, Validators.email]],
 			password: ['', [Validators.required, Validators.minLength(6)]],
 		})
 	}
@@ -33,11 +33,11 @@ export class RegisterComponent implements OnInit{
 	}
 
 	get getNombre() {
-	return this.registroForm.get('nombre')
+	return this.registroForm.get('name')
 	}
 
 	get getCorreo() {
-	return this.registroForm.get('correo')
+	return this.registroForm.get('email')
 	}
 
 	get getPassword() {
@@ -55,8 +55,8 @@ export class RegisterComponent implements OnInit{
 			}
 		  })
 
-		const { nombre, correo, password } = this.registroForm.value;
-		this.authService.crearUsuario( nombre, correo, password )
+		const { name, email, password } = this.registroForm.value;
+		this.authService.crearUsuario( name, email, password )
 		.then(credenciales => {
 			Swal.close();
 			this.router.navigate(['/'])
