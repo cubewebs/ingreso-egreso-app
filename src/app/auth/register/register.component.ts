@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
 // Ngrx
 import { Store } from '@ngrx/store';
 import * as fromActions from '../../shared/ui.actions';
+
+import Swal from 'sweetalert2';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -24,8 +27,8 @@ export class RegisterComponent implements OnInit{
 		private store: Store
 		) {
 		this.registroForm = this.fb.group({
-			nombre: ['', Validators.required],
-			correo: ['', [Validators.required, Validators.email]],
+			name: ['', Validators.required],
+			email: ['', [Validators.required, Validators.email]],
 			password: ['', [Validators.required, Validators.minLength(6)]],
 		})
 	}
@@ -35,11 +38,11 @@ export class RegisterComponent implements OnInit{
 	}
 
 	get getNombre() {
-	return this.registroForm.get('nombre')
+	return this.registroForm.get('name')
 	}
 
 	get getCorreo() {
-	return this.registroForm.get('correo')
+	return this.registroForm.get('email')
 	}
 
 	get getPassword() {
@@ -51,14 +54,28 @@ export class RegisterComponent implements OnInit{
 
 		if( this.registroForm.invalid ) { return; };
 
-		const { nombre, correo, password } = this.registroForm.value;
-		this.authService.crearUsuario( nombre, correo, password )
+		Swal.fire({
+			title: 'Please wait!',
+			didOpen: () => {
+			  Swal.showLoading()
+			}
+		  })
+
+		const { name, email, password } = this.registroForm.value;
+		this.authService.crearUsuario( name, email, password )
 		.then(credenciales => {
 			this.store.dispatch(fromActions.stopLoading())
 			console.log('credenciales ->', credenciales)
+			Swal.close();
 			this.router.navigate(['/'])
 		})
-		.catch( err => console.error('err ->', err))
+		.catch( err => {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: err.message
+			  })
+		})
 	}
 
 }

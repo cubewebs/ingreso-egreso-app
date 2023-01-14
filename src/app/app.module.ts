@@ -8,7 +8,10 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { provideAuth,getAuth } from '@angular/fire/auth';
+
+// import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+// import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 
 //Ngrx
 import { StoreModule } from '@ngrx/store';
@@ -16,6 +19,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { appReducers } from './app.reducer';
 
 import { AppRoutingModule } from './app-routing.module';
+
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
@@ -26,7 +30,6 @@ import { DetalleComponent } from './ingreso-egreso/detalle/detalle.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
-// import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 
 
 
@@ -46,8 +49,12 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-	ReactiveFormsModule,
-	AngularFireModule.initializeApp(environment.firebase),
+	  ReactiveFormsModule,
+    AngularFireAuthModule,
+	  AngularFireModule.initializeApp(environment.firebase),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
 	// AngularFirestoreModule,
  	// provideFirebaseApp(() => initializeApp(environment.firebase)),
  	provideFirestore(() => getFirestore()),
