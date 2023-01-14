@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+// Ngrx
+import { Store } from '@ngrx/store';
+import * as fromActions from '../../shared/ui.actions';
+
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -16,7 +20,8 @@ export class RegisterComponent implements OnInit{
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private store: Store
 		) {
 		this.registroForm = this.fb.group({
 			nombre: ['', Validators.required],
@@ -42,12 +47,14 @@ export class RegisterComponent implements OnInit{
 	}
 
 	crearUsuario() {
+		this.store.dispatch(fromActions.isLoading())
 
 		if( this.registroForm.invalid ) { return; };
 
 		const { nombre, correo, password } = this.registroForm.value;
 		this.authService.crearUsuario( nombre, correo, password )
 		.then(credenciales => {
+			this.store.dispatch(fromActions.stopLoading())
 			console.log('credenciales ->', credenciales)
 			this.router.navigate(['/'])
 		})

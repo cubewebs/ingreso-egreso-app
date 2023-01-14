@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+// Ngrx
+import { Store } from '@ngrx/store';
+import * as fromActions from '../../shared/ui.actions';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +19,8 @@ export class LoginComponent implements OnInit {
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private store: Store
 	) {}
 
 	ngOnInit(): void {
@@ -28,9 +32,11 @@ export class LoginComponent implements OnInit {
 
 	loginUsuario() {
 		if(this.loginForm.invalid) return;
+		this.store.dispatch(fromActions.isLoading())
 		const { email, password } = this.loginForm.value
 		this.authService.loginUsuario( email, password )
 		.then((credentials) => {
+			this.store.dispatch(fromActions.stopLoading())
 			console.log('credentials ->', credentials)
 			this.router.navigate(['/'])
 		})
