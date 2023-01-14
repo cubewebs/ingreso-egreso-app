@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+// Ngrx
+import { Store } from '@ngrx/store';
+import * as fromActions from '../../shared/ui.actions';
+import { AuthService } from '../../services/auth.service';
 
 import Swal from 'sweetalert2';
 
@@ -20,7 +24,8 @@ export class LoginComponent implements OnInit {
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private store: Store
 	) {}
 
 	ngOnInit(): void {
@@ -32,6 +37,7 @@ export class LoginComponent implements OnInit {
 
 	login() {
 		if(this.loginForm.invalid) return;
+		this.store.dispatch(fromActions.isLoading())
 		Swal.fire({
 			title: 'Please wait!',
 			didOpen: () => {
