@@ -5,10 +5,12 @@ import { Router } from '@angular/router';
 // Ngrx
 import { Store } from '@ngrx/store';
 import * as fromActions from '../../shared/ui.actions';
+import * as fromSelectors from '../../shared/ui.selectors';
 
 import Swal from 'sweetalert2';
 
 import { AuthService } from '../../services/auth.service';
+import { AppState } from 'src/app/app.reducer';
 
 @Component({
   selector: 'app-register',
@@ -19,12 +21,13 @@ import { AuthService } from '../../services/auth.service';
 export class RegisterComponent implements OnInit{
 
 	registroForm: FormGroup;
+	cargando: boolean = false;
 
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
 		private router: Router,
-		private store: Store
+		private store: Store<AppState>
 		) {
 		this.registroForm = this.fb.group({
 			name: ['', Validators.required],
@@ -34,6 +37,9 @@ export class RegisterComponent implements OnInit{
 	}
 	
 	ngOnInit(): void {
+
+		this.store.select(fromSelectors.selectIsLoading)
+			.subscribe( is => this.cargando = is )
 
 	}
 
@@ -50,26 +56,20 @@ export class RegisterComponent implements OnInit{
 	}
 
 	crearUsuario() {
-		this.store.dispatch(fromActions.isLoading())
-
+		
 		if( this.registroForm.invalid ) { return; };
-
-		Swal.fire({
-			title: 'Please wait!',
-			didOpen: () => {
-			  Swal.showLoading()
-			}
-		  })
+		
+		this.store.dispatch(fromActions.isLoading())
 
 		const { name, email, password } = this.registroForm.value;
 		this.authService.crearUsuario( name, email, password )
 		.then(credenciales => {
 			this.store.dispatch(fromActions.stopLoading())
 			console.log('credenciales ->', credenciales)
-			Swal.close();
 			this.router.navigate(['/'])
 		})
 		.catch( err => {
+			this.store.dispatch(fromActions.stopLoading())
 			Swal.fire({
 				icon: 'error',
 				title: 'Oops...',

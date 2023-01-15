@@ -6,12 +6,11 @@ import { environment } from '../environments/environment';
 
 //Angularfire
 import { AngularFireModule } from '@angular/fire/compat';
-// import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 
-// import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
-// import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 
 //Ngrx
 import { StoreModule } from '@ngrx/store';
@@ -55,10 +54,6 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-	// AngularFirestoreModule,
- 	// provideFirebaseApp(() => initializeApp(environment.firebase)),
- 	provideFirestore(() => getFirestore()),
-	AngularFireAuthModule,
 	StoreModule.forRoot(appReducers),
 	StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
