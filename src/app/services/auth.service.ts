@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
+
 import { User } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
+
 import { map, Observable } from 'rxjs';
+
+import { Store } from '@ngrx/store';
+import { AppState } from '../app.reducer';
+import * as authActions from '../auth/auth.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +18,25 @@ export class AuthService {
 
   constructor(
 	private fs: Firestore,
+	private afs: AngularFirestore,
 	private auth: AngularFireAuth,
+	private store: Store<AppState>
   ) { }
 
   initAuthListener() {
 	this.auth.authState.subscribe( fuser => {
-		console.log('fuser ->', fuser);
 		console.log('fuser ->', fuser?.uid);
-		console.log('fuser ->', fuser?.email);
+		if( fuser ) {
+			// existe
+			this.afs.doc(`${ fuser.uid }/users`).valueChanges()
+				.subscribe( fsUser => {
+					console.log('fsUser ->', fsUser)
+				})
+		} else {
+			// no existe
+			console.log('Llamar unSetUser del user ->' )
+		}
+		// this.store.dispatch( authActions.setUser() )
 	})
   }
 	
