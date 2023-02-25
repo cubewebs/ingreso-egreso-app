@@ -10,6 +10,7 @@ import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState } from '../app.reducer';
 import * as authActions from '../auth/auth.actions';
+import { Usuario } from '../models/usuario.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,13 +28,15 @@ export class AuthService {
 	this.auth.authState.subscribe( fuser => {
 		console.log('fuser ->', fuser?.uid);
 		if( fuser ) {
-			// existe
+			// user existe
 			this.afs.doc(`${ fuser.uid }/users`).valueChanges()
 				.subscribe( fsUser => {
 					console.log('fsUser ->', fsUser)
+					// const user = Usuario.fromFirebase( fsUser )
+					// this.store.dispatch( authActions.setUser({ user: user }))
 				})
 		} else {
-			// no existe
+			// user no existe
 			console.log('Llamar unSetUser del user ->' )
 		}
 		// this.store.dispatch( authActions.setUser() )

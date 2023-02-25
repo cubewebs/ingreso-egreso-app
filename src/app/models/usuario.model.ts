@@ -1,4 +1,8 @@
 export class Usuario {
+
+	// static fromFirebase( { email, uid, displayName } ) {
+	// 	return new Usuario( uid, displayName, email );
+	// }
 	
 	constructor(
 		public uid: string,

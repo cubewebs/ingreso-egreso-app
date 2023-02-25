@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 // Ngrx
@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 
 import { AuthService } from '../../services/auth.service';
 import { AppState } from 'src/app/app.reducer';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -18,10 +19,11 @@ import { AppState } from 'src/app/app.reducer';
   styles: [
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 	
 	loginForm!: FormGroup;
 	cargando: boolean = false;
+	uiSubscriptions: Subscription[] = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -36,10 +38,15 @@ export class LoginComponent implements OnInit {
 			password: ['123456', [Validators.required, Validators.minLength(6)]],
 		});
 
-		this.store.select(fromSelectors.selectIsLoading).subscribe( isLoading => {
-			this.cargando = isLoading;
-			console.log('Cargando subscriptio ->', this.cargando)
-		} )
+		this.uiSubscriptions.push(
+			this.store.select(fromSelectors.selectIsLoading).subscribe( isLoading => {
+				this.cargando = isLoading;
+			} )
+		)
+	}
+
+	ngOnDestroy(): void {
+		this.uiSubscriptions.forEach( s => s.unsubscribe())
 	}
 
 	login() {

@@ -12,7 +12,7 @@ export const initialState: State = {
 const _uiReducer = createReducer(
     initialState,
 
-    on(fromActions.isLoading, state => ({ ...state, isLoading: true})),
+    on(fromActions.isLoading,   state => ({ ...state, isLoading: true})),
     on(fromActions.stopLoading, state => ({ ...state, isLoading: false})),
 
 );

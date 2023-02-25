@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 
 import { AuthService } from '../../services/auth.service';
 import { AppState } from 'src/app/app.reducer';
+import { Subscription } from 'rxjs';
+import { uiReducer } from '../../shared/ui.reducers';
 
 @Component({
   selector: 'app-register',
@@ -18,10 +20,11 @@ import { AppState } from 'src/app/app.reducer';
   styles: [
   ]
 })
-export class RegisterComponent implements OnInit{
+export class RegisterComponent implements OnInit, OnDestroy{
 
 	registroForm: FormGroup;
 	cargando: boolean = false;
+	uiSubscription: Subscription[] = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -38,9 +41,15 @@ export class RegisterComponent implements OnInit{
 	
 	ngOnInit(): void {
 
-		this.store.select(fromSelectors.selectIsLoading)
+		this.uiSubscription.push(
+			this.store.select(fromSelectors.selectIsLoading)
 			.subscribe( is => this.cargando = is )
+		)
 
+	}
+
+	ngOnDestroy(): void {
+		this.uiSubscription.forEach( s => s.unsubscribe())
 	}
 
 	get getNombre() {
